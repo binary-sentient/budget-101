@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Tests\Fixtures\TestBundle\Doctrine\Generator\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+//use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -16,11 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Tag
 {
     /**
-     * @var UUID The entity Id
+     * @var int The entity Id
      *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -33,7 +33,7 @@ class Tag
     public $name = '';
 
     /**
-     * @var \DateTimeInterface The publication date
+     * @var \DateTimeInterface When the tag was created
      *
      * @ORM\Column(type="datetime")
      * @Assert\NotBlank
@@ -41,12 +41,11 @@ class Tag
     public $createdOn = '';
 
     /**
-     * @var \DateTimeInterface The publication date
+     * @var \DateTimeInterface When user archived the tag
      *
      * @ORM\Column(type="datetime", nullable=true)
-     * @Assert\NotBlank
      */
-    public $archivedOn = '';
+    public $archivedOn = null;
 
     /**
      * @var User The user who created the tag
@@ -55,7 +54,7 @@ class Tag
      */
     public $user;
 
-    public function getId(): Uuid
+    public function getId(): ?int
     {
         return $this->id;
     }

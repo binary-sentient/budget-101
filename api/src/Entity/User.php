@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Tests\Fixtures\TestBundle\Doctrine\Generator\Uuid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+//use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -14,25 +14,26 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiResource
  * @ORM\Entity
+ * @ORM\Table(name="`user`")
  */
 class User
 {
     /**
-     * @var UUID The entity Id
+     * @var int The entity Id
      *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @var string username
      *
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, unique=true)
      * @Assert\NotBlank
      */
-    public $userName = '';
+    public $username = '';
 
     /**
      * @var string user first name
@@ -69,10 +70,9 @@ class User
     /**
      * @var \DateTimeInterface The date the user closed his account
      *
-     * @ORM\Column(type="datetime")
-     * @Assert\NotBlank
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    public $deletedOn = '';
+    public $deletedOn = null;
 
     /**
      * @var \DateTimeInterface The timestamp of the user's last session
@@ -93,7 +93,7 @@ class User
         $this->tags = new ArrayCollection();
     }
 
-    public function getId(): Uuid
+    public function getId(): ?int
     {
         return $this->id;
     }
