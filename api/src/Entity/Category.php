@@ -11,12 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Custom tags for further categorization of budget items
+ * Default Categories for grouping of budget items
  *
  * @ApiResource
  * @ORM\Entity
  */
-class Tag
+class Category
 {
     /**
      * @var int The entity Id
@@ -28,15 +28,15 @@ class Tag
     private $id;
 
     /**
-     * @var \DateTimeInterface When the tag was created
+     * @var \DateTimeInterface When the category was created
      *
      * @ORM\Column(type="datetime")
      * @Assert\NotBlank
      */
-    public $createdOn = '';
+    private $createdOn = '';
 
     /**
-     * @var string user-defined tag name
+     * @var string user-defined category name
      *
      * @ORM\Column(length=128)
      * @Assert\NotBlank
@@ -44,31 +44,33 @@ class Tag
     protected $name = '';
 
     /**
-     * @var \DateTimeInterface When user archived the tag
+     * @var \DateTimeInterface When user archived the category
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $archivedOn = null;
 
     /**
-     * @var User The user who created the tag
-     * TODO: Verify ownership: Tag sets User.id, but User does not set Tag ids
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="tags")
+     * @var User The user who created the category
+     * Many categories belong to one user
+     * TODO: make sure ownership is correctly set. Category should be setting the user id
+     *
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="categories")
      */
     protected $user;
 
     /**
-     * @var Tag The tag to whom many transaction belongs
-     * Many tags for each transaction.
+     * @var Transaction[] Transactions attached to this category
+     * One category has many transactions
+     * TODO: Make sure ownership is correctly set. Category should be able to set transaction ids, and transactions
+     * should be able to set the category id
      *
-     * TODO: Verify ownership: Tag should be able to set Transaction.Ids, and Transaction should be able to set a Tag.id
-     *
-     * @ORM\ManyToMany(targetEntity="Transaction", mappedBy="tags")
+     * @ORM\OneToMany(targetEntity="Transaction", mappedBy="category")
      */
     protected $transactions;
 
     /**
-     * Tag constructor.
+     * Category constructor.
      */
     public function __construct()
     {
@@ -76,6 +78,9 @@ class Tag
         $this->transactions = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -115,7 +120,7 @@ class Tag
     }
 
     /**
-     * @return Collection
+     * @return Transaction[]
      */
     public function getTransactions(): Collection
     {
@@ -138,5 +143,19 @@ class Tag
         $this->archivedOn = $archivedOn;
     }
 
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
 
+    /**
+     * @param Transaction[] $transactions
+     */
+    public function setTransactions(array $transactions): void
+    {
+        $this->transactions = $transactions;
+    }
 }
